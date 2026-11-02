@@ -1,0 +1,44 @@
+{% extends 'recruitment/base.html' %}
+{% block content %}
+<div class="container my-4" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Submit New Candidate</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Candidate Name</label>
+                    <input type="text" name="candidate_name" class="form-control" placeholder="Enter candidate full name" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email5" name="email" class="form-control" placeholder="Enter email address" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Enter phone number" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Select Job Role</label>
+                    <select name="job_id" class="form-select" required>
+                        <option value="">-- Choose Job Description --</option>
+                        {% for job in jobs %}
+                            <option value="{{ job.id }}">{{ job.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Upload Resume (PDF/DOCX)</label>
+                    <input type="file" name="resume" class="form-control" required>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'subvendor_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">Submit Candidate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'recruitment/base.html' %}
+{% block content %}
+<div class="container my-4" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">Edit Candidate Details</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Candidate Name</label>
+                    <input type="text" name="candidate_name" class="form-control" value="{{ candidate.candidate_name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" value="{{ candidate.email }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" value="{{ candidate.phone }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="SUBMITTED" {% if candidate.status == 'SUBMITTED' %}selected{% endif %}>Submitted</option>
+                        <option value="AGENCY_REVIEW" {% if candidate.status == 'AGENCY_REVIEW' %}selected{% endif %}>Agency Review</option>
+                        <option value="SUBMITTED_TO_CLIENT" {% if candidate.status == 'SUBMITTED_TO_CLIENT' %}selected{% endif %}>Client Review</option>
+                        <option value="CLIENT_SHORTLISTED" {% if candidate.status == 'CLIENT_SHORTLISTED' %}selected{% endif %}>Shortlisted</option>
+                        <option value="INTERVIEW" {% if candidate.status == 'INTERVIEW' %}selected{% endif %}>Interviewing</option>
+                        <option value="OFFERED" {% if candidate.status == 'OFFERED' %}selected{% endif %}>Offer Released</option>
+                        <option value="JOINED" {% if candidate.status == 'JOINED' %}selected{% endif %}>Joined</option>
+                        <option value="REJECTED" {% if candidate.status == 'REJECTED' %}selected{% endif %}>Rejected</option>
+                        <option value="ON_HOLD" {% if candidate.status == 'ON_HOLD' %}selected{% endif %}>On Hold</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

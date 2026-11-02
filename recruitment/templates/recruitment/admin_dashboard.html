@@ -1,0 +1,114 @@
+{% extends 'recruitment/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Admin Dashboard (Company A)</h2>
+            <div>
+                <a href="{% url 'export_candidates_csv' %}" class="btn btn-success me-2">Export CSV Report</a>
+                <a href="/admin/" class="btn btn-dark" target="_blank">Go to Django Admin Panel</a>
+            </div>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <form method="GET" class="row g-3 align-items-center">
+                    <div class="col-md-5">
+                        <input type="text" name="search" class="form-control" placeholder="Search by candidate name, email, or phone..." value="{{ search_query }}">
+                    </div>
+                    <div class="col-md-4">
+                        <select name="status" class="form-select">
+                            <option value="">-- Filter by Status --</option>
+                            <option value="SUBMITTED" {% if selected_status == 'SUBMITTED' %}selected{% endif %}>Submitted by Subvendor</option>
+                            <option value="AGENCY_REVIEW" {% if selected_status == 'AGENCY_REVIEW' %}selected{% endif %}>Company A Review</option>
+                            <option value="SUBMITTED_TO_CLIENT" {% if selected_status == 'SUBMITTED_TO_CLIENT' %}selected{% endif %}>Submitted to Client</option>
+                            <option value="CLIENT_SHORTLISTED" {% if selected_status == 'CLIENT_SHORTLISTED' %}selected{% endif %}>Client Shortlisted</option>
+                            <option value="INTERVIEW" {% if selected_status == 'INTERVIEW' %}selected{% endif %}>Interview Stage</option>
+                            <option value="OFFERED" {% if selected_status == 'OFFERED' %}selected{% endif %}>Offer Released</option>
+                            <option value="JOINED" {% if selected_status == 'JOINED' %}selected{% endif %}>Joined (Hired)</option>
+                            <option value="REJECTED" {% if selected_status == 'REJECTED' %}selected{% endif %}>Rejected</option>
+                            <option value="ON_HOLD" {% if selected_status == 'ON_HOLD' %}selected{% endif %}>On Hold</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Candidates Table -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">All Candidate Submissions</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Candidate Name</th>
+                                <th>Job Title</th>
+                                <th>Submitted By</th>
+                                <th>Status Update</th>
+                                <th>Resume</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in candidates %}
+                            <tr>
+                                <td>
+                                    <strong>{{ c.candidate_name }}</strong>
+                                    {% if c.email %}<br><small class="text-muted">{{ c.email }}</small>{% endif %}
+                                </td>
+                                <td>{{ c.job.title }}</td>
+                                <td>{{ c.submitted_by.username }}</td>
+                                <td>
+                                    <form method="POST" class="d-flex align-items-center">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="candidate_id" value="{{ c.id }}">
+                                        <select name="status" class="form-select form-select-sm me-2">
+                                            <option value="SUBMITTED" {% if c.status == 'SUBMITTED' %}selected{% endif %}>Submitted</option>
+                                            <option value="AGENCY_REVIEW" {% if c.status == 'AGENCY_REVIEW' %}selected{% endif %}>Agency Review</option>
+                                            <option value="SUBMITTED_TO_CLIENT" {% if c.status == 'SUBMITTED_TO_CLIENT' %}selected{% endif %}>Client Review</option>
+                                            <option value="CLIENT_SHORTLISTED" {% if c.status == 'CLIENT_SHORTLISTED' %}selected{% endif %}>Shortlisted</option>
+                                            <option value="INTERVIEW" {% if c.status == 'INTERVIEW' %}selected{% endif %}>Interviewing</option>
+                                            <option value="OFFERED" {% if c.status == 'OFFERED' %}selected{% endif %}>Offer Released</option>
+                                            <option value="JOINED" {% if c.status == 'JOINED' %}selected{% endif %}>Joined</option>
+                                            <option value="REJECTED" {% if c.status == 'REJECTED' %}selected{% endif %}>Rejected</option>
+                                            <option value="ON_HOLD" {% if c.status == 'ON_HOLD' %}selected{% endif %}>On Hold</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    {% if c.resume %}
+                                        <a href="{{ c.resume.url }}" target="_blank" class="btn btn-sm btn-outline-secondary">View Resume</a>
+                                    {% else %}
+                                        <span class="text-muted">No File</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{% url 'update_candidate' c.id %}" class="btn btn-warning">Edit</a>
+                                        <a href="{% url 'delete_candidate' c.id %}" class="btn btn-danger">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">No candidate submissions found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
