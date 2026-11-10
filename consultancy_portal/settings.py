@@ -20,6 +20,7 @@ DEBUG = False
 # Allow your live domain name (replace 'yourusername' with your actual username or domain)
 # ALLOWED_HOSTS = ['kumar.pythonanywhere.com', '127.0.0.1', 'localhost']
 ALLOWED_HOSTS = ['consulting-service-dvun.onrender.com', '.onrender.com', '127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['https://consulting-service-dvun.onrender.com']
 # Application definition
 INSTALLED_APPS = [
     # Default Django Apps
