@@ -18,7 +18,8 @@ SECRET_KEY = 'django-insecure-79hj_yg$iblh!a(298vt1qr5oui!pqv4he1a@x$q-)r@dq^$$t
 DEBUG = False
 
 # Allow your live domain name (replace 'yourusername' with your actual username or domain)
-ALLOWED_HOSTS = ['kumar.pythonanywhere.com', '127.0.0.1', 'localhost']
+# ALLOWED_HOSTS = ['kumar.pythonanywhere.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['consulting-service-dvun.onrender.com', '.onrender.com', '127.0.0.1', 'localhost']
 # Application definition
 INSTALLED_APPS = [
     # Default Django Apps
