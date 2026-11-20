@@ -1,27 +1,31 @@
-"""
-Django settings for consultancy_portal project.
-"""
 import os
 from pathlib import Path
+import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-79hj_yg$iblh!a(298vt1qr5oui!pqv4he1a@x$q-)r@dq^$$t'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-79hj_yg$iblh!a(298vt1qr5oui!pqv4he1a@x$q-)r@dq^$$t'
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-# ALLOWED_HOSTS = []
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+ALLOWED_HOSTS = [
+    'consulting-service-dvun.onrender.com',
+    '.onrender.com',
+    '127.0.0.1',
+    'localhost',
+]
 
-# Allow your live domain name (replace 'yourusername' with your actual username or domain)
-# ALLOWED_HOSTS = ['kumar.pythonanywhere.com', '127.0.0.1', 'localhost']
-ALLOWED_HOSTS = ['consulting-service-dvun.onrender.com', '.onrender.com', '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ['https://consulting-service-dvun.onrender.com']
-# Application definition
+CSRF_TRUSTED_ORIGINS = [
+    'https://consulting-service-dvun.onrender.com',
+    'https://*.onrender.com',
+]
+
+# Proxy SSL header so Django knows HTTPS requests on Render are secure
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 INSTALLED_APPS = [
     # Default Django Apps
     'django.contrib.admin',
@@ -30,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
- 
+
     # Third-Party Apps
     'crispy_forms',
     'crispy_bootstrap5',
@@ -41,10 +45,8 @@ INSTALLED_APPS = [
     'recruitment',
 ]
 
-# Set Custom User Model
 AUTH_USER_MODEL = 'recruitment.User'
 
-# Crispy Forms Config
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
@@ -60,6 +62,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'consultancy_portal.urls'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -77,45 +80,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'consultancy_portal.wsgi.application'
 
-# Database
+# Database: uses Render PostgreSQL DATABASE_URL when set, falls back to SQLite locally
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
 }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# STATIC_URL = 'static/'
-# # Add this exact line right below STATIC_URL:
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# Default primary key field type
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Redirect login_required decorator to our custom login url
 LOGIN_URL = 'login'
